@@ -1,0 +1,101 @@
+#!/bin/sh
+
+data_config()
+{
+ 	echo "Enter password:"  
+        read password
+	
+	if [ "$password" = "" ];
+	then 
+		echo " Invalid input, Please try again "
+		exit
+	fi
+ 
+        file_name=$1
+        IP=$2
+
+        if [ "$3" != "" ];
+        then 
+                username=$3
+	else
+		username="root"
+        fi
+        
+        if [ "$4" != "" ];
+        then 
+                port=$4
+        else
+                port=0
+        fi
+
+#        echo "$password $file_name $IP $username $port"
+	return
+}
+
+make_exp_script()
+{
+
+	echo "make_exec_script::$password $file_name $IP $username $port"
+
+		cat > /usr/sbin/$file_name <<- EOF
+			#!/usr/bin/expect
+
+			set ip $IP
+
+			set user $username
+
+			set password $password
+		
+			spawn ssh "\$user\@\$ip"
+
+			expect "\$user\@\$ip\'s password:"
+
+			send "\$password\r";
+
+			interact
+		EOF
+		chmod 0755 /usr/sbin/$file_name
+}
+
+make_exp_script_port()
+{
+	 echo "make_exec_script_port::$password $file_name $IP $username $port"
+		cat > /usr/sbin/$file_name <<- EOF
+                        #!/usr/bin/expect
+
+                        set ip $IP
+
+                        set user $username
+
+                        set password $password
+			
+			set port $port
+                
+                        spawn ssh "\$user\@\$ip \-p \$port"
+
+                        expect "\$user\@\$ip\'s password:"
+
+                        send "\$password\r";
+
+                        interact
+		EOF
+		chmod 0755 /usr/sbin/$file_name
+}
+
+#main 
+
+if [ "$#" -lt "2" ];
+	then
+		echo "Please follow given format: ./ssh_shortcut file_name IP username(optional) port(optional) "
+		exit
+else 
+	data_config $1 $2 $3 $4
+
+	if [ "$port" = "0" ];
+	then
+		make_exp_script $password $file_name $IP $username
+	else
+		make_exp_script_port $password $file_name $IP $username $port
+	fi
+	echo "$password $file_name $IP $username $port"
+fi
