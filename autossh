@@ -1,5 +1,10 @@
 #!/bin/sh
 
+#	___Dependencies___
+#install expect language support before using this:
+#	apt-get install expect
+#	yum install expect
+
 data_config()
 {
  	echo "Enter password:"  
@@ -60,24 +65,24 @@ make_exp_script()
 make_exp_script_port()
 {
 	 echo "make_exec_script_port::$password $file_name $IP $username $port"
-		cat > /usr/sbin/$file_name <<- EOF
-                        #!/usr/bin/expect
+			cat > /usr/sbin/$file_name <<- EOF
+			#!/usr/bin/expect
 
-                        set ip $IP
+			set ip $IP
 
-                        set user $username
+			set user $username
 
-                        set password $password
+			set password $password
 			
 			set port $port
                 
-                        spawn ssh "\$user\@\$ip \-p \$port"
+			spawn ssh "\$user\@\$ip" "\-p \$port"
 
-                        expect "\$user\@\$ip\'s password:"
+			expect "\$user\@\$ip\'s password:"
 
-                        send "\$password\r";
+			send "\$password\r";
 
-                        interact
+			interact
 		EOF
 		chmod 0755 /usr/sbin/$file_name
 }
