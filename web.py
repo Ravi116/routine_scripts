@@ -2,12 +2,10 @@
 import os
 import sys
 import urllib2
-import requests
+#import requests
 import wget		#if import error ::: pip install wget
 from bs4 import BeautifulSoup
 
-
-#ecosmob = "http://animeheaven.eu/watch.php?a=One%20Piece%20Dubbed&e=526"
 
 def webscrap(url):
 	print("Getting download link from page :",url)
@@ -44,8 +42,6 @@ def get_urls_from_file():
         	test.append(line)
 	return test
 	
-#ecosmob = "http://animeheaven.eu/watch.php?a=One%20Piece%20Dubbed&e=526"
-
 urls=[]
 arguments=sys.argv
 if (len(arguments) > 3):
@@ -65,8 +61,3 @@ else:
  		tryit=webscrap(urls[i])
 		print(tryit)
 		test_file = wget.download(tryit)
-
-#print tryit
-#r=requests.get(tryit)
-#print len(r.content)
-#urllib2.urlopen(tryit)
